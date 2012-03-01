@@ -26,10 +26,10 @@ def convert_to_github_data(files):
 
     return new_files
 
-def upload_to_github(filenames):
+def upload_to_github(filenames, **kwargs):
 
-    payload = {'description' : 'inital commit',
-               'public' : 'false',
+    payload = {'description' : kwargs['description'] if 'description' in kwargs else 'inital commit',
+               'public' : kwargs['public'] if 'public' in kwargs else 'false',
                'files' : convert_to_github_data(get_files_data(filenames))
                }
 
@@ -43,10 +43,12 @@ def print_github_response(response):
     for file_ in data['files']:
         print '{file} is at {raw_url}'.format(file=file_, raw_url=data['files'][file_]['raw_url'])
 
-    print '\n\ngist located at {url}'.format(url=data['html_url']) 
+    print '\n\ngist located at {url}'.format(url=data['html_url'])
 
 if __name__ == '__main__':
-    durp = upload_to_github(['test.txt'])
+    import webbrowser
+    durp = upload_to_github(['test.txt'], public=True)
     print_github_response(durp)
+    webbrowser.open(loads(durp.content)['html_url'])
 
         
